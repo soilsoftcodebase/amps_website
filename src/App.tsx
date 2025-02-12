@@ -22,6 +22,9 @@ function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [hoveredItem, setHoveredItem] = useState(null);
+  // NEW: State to manage the contact form modal visibility and submission confirmation
+  const [isContactFormOpen, setIsContactFormOpen] = useState(false);
+  const [formSubmitted, setFormSubmitted] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -110,6 +113,53 @@ function App() {
     },
   ];
 
+  // NEW: Create additional refs for scrolling to each section
+  const homeRef = React.useRef(null);
+  const aboutSectionRef = React.useRef(null);
+  const servicesSectionRef = React.useRef(null);
+  const portfolioSectionRef = React.useRef(null);
+  const contactSectionRef = React.useRef(null);
+
+  // NEW: Helper function to scroll to the correct section
+  const handleMenuClick = (section) => {
+    switch (section) {
+      case "About Us":
+        if (aboutSectionRef.current) {
+          aboutSectionRef.current.scrollIntoView({ behavior: "smooth" });
+        }
+        break;
+      case "Services":
+        if (servicesSectionRef.current) {
+          servicesSectionRef.current.scrollIntoView({ behavior: "smooth" });
+        }
+        break;
+      case "Portfolio":
+        if (portfolioSectionRef.current) {
+          portfolioSectionRef.current.scrollIntoView({ behavior: "smooth" });
+        }
+        break;
+      case "Contact Us":
+        if (contactSectionRef.current) {
+          contactSectionRef.current.scrollIntoView({ behavior: "smooth" });
+        }
+        break;
+      default:
+        if (homeRef.current) {
+          homeRef.current.scrollIntoView({ behavior: "smooth" });
+        }
+    }
+  };
+
+  // NEW: Handle form submission with confirmation animation
+  const handleFormSubmit = () => {
+    setFormSubmitted(true);
+    // After 2 seconds, close the modal and reset submission state
+    setTimeout(() => {
+      setIsContactFormOpen(false);
+      setFormSubmitted(false);
+    }, 2000);
+  };
+
   return (
     <div className="min-h-screen bg-white">
       <nav
@@ -152,6 +202,8 @@ function App() {
                   onHoverEnd={() => setHoveredItem(null)}
                 >
                   <motion.button
+                    // NEW: onClick to scroll to the corresponding section
+                    onClick={() => handleMenuClick(item.name)}
                     className={`px-4 py-2 rounded-lg flex items-center space-x-1 ${
                       scrolled
                         ? "text-gray-600 hover:text-blue-600"
@@ -161,31 +213,8 @@ function App() {
                     whileTap={{ scale: 0.95 }}
                   >
                     <span>{item.name}</span>
-                    <ChevronDown className="w-4 h-4" />
+                    {/* <ChevronDown className="w-4 h-4" /> */}
                   </motion.button>
-
-                  <AnimatePresence>
-                    {hoveredItem === item.name && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: 10 }}
-                        className="absolute top-full left-0 mt-2 w-60 bg-white rounded-lg shadow-xl p-2"
-                      >
-                        <div className="flex items-start space-x-3 p-3 rounded-lg hover:bg-gray-50">
-                          <div className="flex-shrink-0 mt-1">{item.icon}</div>
-                          <div>
-                            <p className="font-medium text-gray-900">
-                              {item.name}
-                            </p>
-                            <p className="text-sm text-gray-500">
-                              {item.description}
-                            </p>
-                          </div>
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
                 </motion.div>
               ))}
             </div>
@@ -193,6 +222,8 @@ function App() {
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
+              // NEW: onClick opens the contact form modal
+              onClick={() => setIsContactFormOpen(true)}
               className={`hidden md:flex items-center space-x-2 px-4 py-2 rounded-full ${
                 scrolled
                   ? "bg-blue-600 text-white"
@@ -244,7 +275,9 @@ function App() {
                     key={item.name}
                     whileHover={{ x: 10 }}
                     className="flex items-start space-x-3 w-full p-3 rounded-lg hover:bg-gray-50"
+                    // NEW: onClick to scroll to the corresponding section and update state
                     onClick={() => {
+                      handleMenuClick(item.name);
                       setActiveSection(item.name.toLowerCase());
                       setIsMenuOpen(false);
                     }}
@@ -264,28 +297,18 @@ function App() {
         </AnimatePresence>
       </nav>
 
-      <div className="relative h-screen">
+      {/* Attach homeRef to the top section (home) */}
+      <div className="relative h-screen" ref={homeRef}>
         <div className="absolute inset-0 bg-black/70 z-10" />
         <div className="absolute inset-0 z-0">
           <iframe
             className="w-full h-full"
-            src="https://www.youtube.com/embed/Sb3h_d_jG-A?autoplay=1&mute=1&vq=hd1080"
+            src="https://www.youtube.com/embed/Sb3h_d_jG-A?autoplay=1&mute=0&vq=hd1080"
             title="Background Video"
             frameBorder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
           ></iframe>
-
-          {/* <iframe
-            width="560"
-            height="315"
-            src="https://www.youtube.com/embed/Sb3h_d_jG-A?si=R_msMNzoM3r3o4dJ"
-            title="YouTube video player"
-            frameborder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            referrerpolicy="strict-origin-when-cross-origin"
-            allowfullscreen
-          ></iframe> */}
         </div>
         <div className="absolute inset-0 flex items-center justify-center z-20">
           <motion.div
@@ -332,7 +355,10 @@ function App() {
       </section>
 
       <motion.section
-        ref={aboutRef}
+        ref={(node) => {
+          aboutRef(node);
+          aboutSectionRef.current = node;
+        }}
         className="py-20 bg-white"
         initial={{ opacity: 0 }}
         animate={aboutInView ? { opacity: 1 } : {}}
@@ -400,7 +426,10 @@ function App() {
       </motion.section>
 
       <motion.section
-        ref={servicesRef}
+        ref={(node) => {
+          servicesRef(node);
+          servicesSectionRef.current = node;
+        }}
         className="py-20 bg-gray-50"
         initial={{ opacity: 0 }}
         animate={servicesInView ? { opacity: 1 } : {}}
@@ -481,7 +510,7 @@ function App() {
         </div>
       </section>
 
-      <section className="py-20 bg-gray-50">
+      <section className="py-20 bg-gray-50" ref={portfolioSectionRef}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-4xl font-bold text-center mb-12">
             Our Portfolio
@@ -536,7 +565,7 @@ function App() {
         </div>
       </section>
 
-      <section className="py-20 bg-white">
+      <section className="py-20 bg-white" ref={contactSectionRef}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-4xl font-bold text-center mb-12">Contact Us</h2>
           <div className="flex flex-col items-center space-y-8">
@@ -560,7 +589,7 @@ function App() {
               >
                 <Phone className="w-8 h-8 text-blue-600 mb-4" />
                 <h3 className="text-lg font-semibold mb-2">Call Us</h3>
-                <p className="text-gray-600 text-center">+1 234 567 890</p>
+                <p className="text-gray-600 text-center">7410082553</p>
               </motion.div>
               <motion.div
                 whileHover={{ scale: 1.05 }}
@@ -568,7 +597,9 @@ function App() {
               >
                 <MessageSquare className="w-8 h-8 text-blue-600 mb-4" />
                 <h3 className="text-lg font-semibold mb-2">Email Us</h3>
-                <p className="text-gray-600 text-center">info@company.com</p>
+                <p className="text-gray-600 text-center">
+                  adirajmspl.1@gmail.com
+                </p>
               </motion.div>
               <motion.div
                 whileHover={{ scale: 1.05 }}
@@ -577,7 +608,8 @@ function App() {
                 <Building className="w-8 h-8 text-blue-600 mb-4" />
                 <h3 className="text-lg font-semibold mb-2">Visit Us</h3>
                 <p className="text-gray-600 text-center">
-                  123 Business Street, City
+                  Ambethan Chowk, Near Shri Laxmi Steel, A/p. Chakan, Tal.Khed,
+                  Dist. Pune - 410 501
                 </p>
               </motion.div>
             </div>
@@ -589,7 +621,9 @@ function App() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-3 gap-8">
             <div>
-              <h3 className="text-xl font-bold mb-4">CompanyName</h3>
+              <h3 className="text-xl font-bold mb-4">
+                Adiraj Manpower Solutions Pvt Ltd.
+              </h3>
               <p className="text-gray-400">
                 25+ years of excellence in providing professional industrial
                 solutions
@@ -597,23 +631,123 @@ function App() {
             </div>
             <div>
               <h3 className="text-xl font-bold mb-4">Contact</h3>
-              <p className="text-gray-400">Email: info@company.com</p>
-              <p className="text-gray-400">Phone: +1 234 567 890</p>
+              <p className="text-gray-400">Email: adirajmspl.1@gmail.com</p>
+              <p className="text-gray-400">Phone: 7410082553</p>
             </div>
             <div>
               <h3 className="text-xl font-bold mb-4">Address</h3>
-              <p className="text-gray-400">123 Business Street</p>
-              <p className="text-gray-400">City, Country</p>
+              <p className="text-gray-400">
+                Ambethan Chowk, Near Shri Laxmi Steel, A/p. Chakan, Tal.Khed,
+                Dist. Pune - 410 501
+              </p>
             </div>
           </div>
           <div className="mt-8 pt-8 border-t border-gray-800 text-center text-gray-400">
             <p>
-              &copy; {new Date().getFullYear()} CompanyName. All rights
-              reserved.
+              &copy; {new Date().getFullYear()} Adiraj Manpower Solutions Pvt
+              Ltd. . All rights reserved.
             </p>
           </div>
         </div>
       </footer>
+
+      {/* NEW: Modal Contact Form */}
+      <AnimatePresence>
+        {isContactFormOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+            onClick={() => setIsContactFormOpen(false)}
+          >
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className="bg-white rounded-lg p-6 w-full max-w-md mx-4"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-xl font-bold">Get in Touch</h3>
+                <button
+                  onClick={() => setIsContactFormOpen(false)}
+                  className="text-gray-500 hover:text-gray-700"
+                >
+                  X
+                </button>
+              </div>
+              {/* NEW: Conditional rendering to show form or confirmation message */}
+              {!formSubmitted ? (
+                <form>
+                  <div className="mb-4">
+                    <label
+                      className="block text-gray-700 text-sm font-medium mb-2"
+                      htmlFor="name"
+                    >
+                      Name
+                    </label>
+                    <input
+                      type="text"
+                      id="name"
+                      className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                      placeholder="Your Name"
+                    />
+                  </div>
+                  <div className="mb-4">
+                    <label
+                      className="block text-gray-700 text-sm font-medium mb-2"
+                      htmlFor="mobile"
+                    >
+                      Mobile Number
+                    </label>
+                    <input
+                      type="tel"
+                      id="mobile"
+                      className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                      placeholder="Your Mobile Number"
+                    />
+                  </div>
+                  <div className="mb-4">
+                    <label
+                      className="block text-gray-700 text-sm font-medium mb-2"
+                      htmlFor="company"
+                    >
+                      Company Name
+                    </label>
+                    <input
+                      type="text"
+                      id="company"
+                      className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring focus:border-blue-300"
+                      placeholder="Your Company Name"
+                    />
+                  </div>
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    type="button"
+                    onClick={handleFormSubmit}
+                    className="w-full bg-blue-600 text-white px-4 py-2 rounded-md"
+                  >
+                    Submit
+                  </motion.button>
+                </form>
+              ) : (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <p className="text-green-600 text-center text-lg">
+                    Thank you! Your message has been sent.
+                  </p>
+                </motion.div>
+              )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useInView } from "react-intersection-observer";
+import logo from "./assets/logo.png";
 import {
   Phone,
   Shield,
@@ -131,7 +132,7 @@ function App() {
                 className=" flex items-center justify-center"
               >
                 {/* <Users className="w-6 h-6 text-white" /> */}
-                <img src="assets/logo.png" alt="Logo" className="w-48" />
+                <img src={logo} alt="Logo" className="w-48" />
               </motion.div>
               {/* <span
                 className={`text-2xl font-bold ${

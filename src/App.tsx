@@ -304,13 +304,21 @@ function App() {
         <div className="absolute inset-0 z-0">
           <iframe
             className="w-full h-full"
-            src="https://www.youtube.com/embed/Sb3h_d_jG-A?autoplay=1&mute=0&vq=hd1080"
+            src="https://www.youtube.com/embed/Sb3h_d_jG-A?autoplay=1&mute=0&controls=0&modestbranding=1&showinfo=0&rel=0&fs=0&loop=1&hd1080"
             title="Background Video"
             frameBorder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            // allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allow="autoplay; encrypted-media; picture-in-picture"
             allowFullScreen
           ></iframe>
           {/* <YoutubeVideo /> */}
+          {/* <iframe
+        src="https://www.youtube.com/embed/GicG2aDPfXw?autoplay=1&mute=0&controls=0&modestbranding=1&showinfo=0&rel=0&fs=0&loop=1&playlist=GicG2aDPfXw"
+        title="YouTube video player"
+        frameBorder="0"
+        allow="autoplay; encrypted-media; picture-in-picture"
+        allowFullScreen
+></iframe> */}
         </div>
         <div className="absolute inset-0 flex items-center justify-center z-20">
           <motion.div

@@ -304,7 +304,7 @@ function App() {
         <div className="absolute inset-0 z-0">
           <iframe
             className="w-full h-full"
-            src="https://www.youtube.com/embed/Sb3h_d_jG-A?autoplay=1&vq=hd1080"
+            src="https://www.youtube.com/embed/Sb3h_d_jG-A?autoplay=1&mute=0&vq=hd1080"
             title="Background Video"
             frameBorder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

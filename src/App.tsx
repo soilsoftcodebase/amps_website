@@ -318,7 +318,7 @@ function App() {
       <div className="relative h-screen" ref={homeRef}>
         <div className="absolute inset-0 bg-black/70 z-10" />
         <div className="absolute inset-0 z-0">
-          <div
+          {/* <div
             // onClick={handleClickToUnmute}
             style={{
               // position: "relative",
@@ -336,7 +336,7 @@ function App() {
               allow="autoplay; encrypted-media; picture-in-picture"
               allowFullScreen
             ></iframe>
-          </div>
+          </div> */}
 
           {/* <div style="max-width: 1280px"> */}
           {/* <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;"> */}
@@ -353,7 +353,7 @@ function App() {
           ></iframe> */}
           {/* </div>
           </div> */}
-          {/* <YoutubeVideo /> */}
+          <YoutubeVideo />
           {/* <iframe
         src="https://www.youtube.com/embed/GicG2aDPfXw?autoplay=1&mute=0&controls=0&modestbranding=1&showinfo=0&rel=0&fs=0&loop=1&playlist=GicG2aDPfXw"
         title="YouTube video player"

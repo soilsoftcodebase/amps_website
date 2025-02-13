@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import logo from "./assets/logo.png";
@@ -161,6 +161,22 @@ function App() {
     }, 2000);
   };
 
+  const iframeRef = useRef(null);
+
+  // const iframeRef = useRef(null);
+
+  // Handle unmuting after user interaction
+  const handleClickToUnmute = () => {
+    const iframe = iframeRef.current;
+    const iframeContent = iframe.contentWindow;
+
+    // Send the unmute command to the YouTube iframe
+    iframeContent.postMessage(
+      '{"event":"command","func":"unMute","args":""}',
+      "*"
+    );
+  };
+
   return (
     <div className="min-h-screen bg-white">
       <nav
@@ -302,15 +318,41 @@ function App() {
       <div className="relative h-screen" ref={homeRef}>
         <div className="absolute inset-0 bg-black/70 z-10" />
         <div className="absolute inset-0 z-0">
-          <iframe
-            className="w-full h-full"
-            src="https://www.youtube.com/embed/Sb3h_d_jG-A?autoplay=1&mute=0&controls=0&modestbranding=1&showinfo=0&rel=0&fs=0&loop=1&hd1080"
-            title="Background Video"
-            frameBorder="0"
-            // allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allow="autoplay; encrypted-media; picture-in-picture"
-            allowFullScreen
-          ></iframe>
+          <div
+            // onClick={handleClickToUnmute}
+            style={{
+              // position: "relative",
+              // width: "100vw",
+              height: "100vh",
+              overflow: "hidden",
+            }}
+          >
+            <iframe
+              // ref={iframeRef}
+              className="w-full h-full"
+              src="https://www.youtube.com/embed/Sb3h_d_jG-A?autoplay=1&mute=0&controls=0&modestbranding=1&showinfo=0&rel=0&fs=0&loop=1&hd1080"
+              title="Background Video"
+              frameBorder="0"
+              allow="autoplay; encrypted-media; picture-in-picture"
+              allowFullScreen
+            ></iframe>
+          </div>
+
+          {/* <div style="max-width: 1280px"> */}
+          {/* <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;"> */}
+          {/* <iframe
+            src="https://soilsofttechnologies498-my.sharepoint.com/:v:/g/personal/maheshbabu_m_soilsoft_ai/EVPJ_TN9hm5FtTfzhZK9WOcB3uo9fanA7YiCBd2ZJ4mViQ?e=Dl5wUI&nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJTdHJlYW1XZWJBcHAiLCJyZWZlcnJhbFZpZXciOiJTaGFyZURpYWxvZy1MaW5rIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXcifSwicGxheWJhY2tPcHRpb25zIjp7InN0YXJ0VGltZUluU2Vjb25kcyI6MjEuMDV9fQ%3D%3D"
+            // src="https://soilsofttechnologies498-my.sharepoint.com/personal/maheshbabu_m_soilsoft_ai/_layouts/15/embed.aspx?UniqueId=33fdc953-867d-456e-b537-f38592bd58e7&embed=%7B%22af%22%3Atrue%2C%22ust%22%3Atrue%7D&referrer=StreamWebApp&referrerScenario=EmbedDialog.Create"
+            width="1280"
+            height="720"
+            // frameborder="0"
+            scrolling="no"
+            allowfullscreen
+            title="MSMS.mp4"
+            // style="border:none; position: absolute; top: 0; left: 0; right: 0; bottom: 0; height: 100%; max-width: 100%;"
+          ></iframe> */}
+          {/* </div>
+          </div> */}
           {/* <YoutubeVideo /> */}
           {/* <iframe
         src="https://www.youtube.com/embed/GicG2aDPfXw?autoplay=1&mute=0&controls=0&modestbranding=1&showinfo=0&rel=0&fs=0&loop=1&playlist=GicG2aDPfXw"
